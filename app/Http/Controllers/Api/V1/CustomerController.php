@@ -22,6 +22,23 @@ class CustomerController extends Controller
         return response()->json(CustomerAddress::where('user_id', $request->user()->id)->latest()->get(), 200);
     }
 
+    public function address_list2(Request $request)
+    {
+        //return response()->json(CustomerAddress::where('id', $request->id), 200);
+        return response()->json(CustomerAddress::all(), 200);
+    }
+
+    public function address_by_id(Request $request)
+    {
+        return response()->json(CustomerAddress::where(['id' => $request['id']])->get(), 200);
+        return response()->json(CustomerAddress::all(), 200);
+    }
+
+    public function address_info(Request $request)
+    {
+        return response()->json(CustomerAddress::where('id', $request->id), 200);
+    }
+
     public function add_new_address(Request $request)
     {
         $validator = Validator::make($request->all(), [

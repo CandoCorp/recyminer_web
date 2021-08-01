@@ -65,7 +65,7 @@
                         <span class="ml-2 ml-sm-3">
                         <i class="tio-date-range"></i> {{date('d M Y H:i',strtotime($order['created_at']))}}
                 </span>
-              
+
                     </div>
 
                     <div class="mt-2">
@@ -126,7 +126,7 @@
                                     class="badge badge-secondary">{{$order->branch?$order->branch->name:'Branch deleted!'}}</label>
                             </h5>
                         </div>
-                     
+
 
                         <div class="hs-unfold float-right">
                             <div class="dropdown">
@@ -190,20 +190,20 @@
 
                            <input type="date" value="{{ $order['delivery_date'] }}"  name="from" id="from_date" data-id="{{ $order['id'] }}"
                                 class="form-control" required>
-                             
+
                         </div>
                         <div class="hs-unfold ml-2">
                             <select class="custom-select custom-select time_slote" name="timeSlot" data-id="{{$order['id']}}">
                         <option disabled>--- {{trans('messages.select')}} {{trans('messages.Time Slot')}} ---</option>
-                       
+
                         @foreach(\App\Model\TimeSlot::all() as $timeSlot)
-                       
-           
+
+
                            <option value="{{$timeSlot['id']}}" {{$timeSlot->id == $order->time_slot_id ?'selected':''}}>{{$timeSlot['start_time']}} - {{$timeSlot['end_time']}}</option>
-                          
-                           
+
+
                         @endforeach
-                        
+
                     </select>
                     </div>
                     </div>
@@ -280,10 +280,19 @@
                             <!-- Media -->
                                 <div class="media">
                                     <div class="avatar avatar-xl mr-3">
-                                        <img class="img-fluid"
-                                             src="{{asset('storage/app/public/product')}}/{{json_decode($detail->product['image'],true)[0]}}"
-                                             onerror="this.src='{{asset('public/assets/admin/img/160x160/img2.jpg')}}'"
-                                             alt="Image Description">
+
+                                    @if(strlen($detail->product['image'])==2)
+                                    <img class="avatar avatar-xxl avatar-4by3 mr-4"
+                                 src="{{asset('public/assets/admin/img/160x160/img2.jpg')}}"
+                                 alt="Image Description">
+                                        @else
+                                            <img class="avatar avatar-xxl avatar-4by3 mr-4"
+                                 src="{{asset('storage/app/public/product')}}/{{json_decode($detail->product['image'],true)[0]}}"
+                                 onerror="this.src='{{asset('public/assets/admin/img/160x160/img2.jpg')}}'"
+                                 alt="Image Description">
+                                        @endif
+
+
                                     </div>
 
                                     <div class="media-body">
@@ -291,22 +300,22 @@
                                             <div class="col-md-3 mb-3 mb-md-0">
                                                 <strong> {{$detail->product['name']}}</strong><br>
 
-                                             
+
                                             </div>
 
                                             <div class="col col-md-2 align-self-center">
-                                              
+
                                                 <h6>{{$detail['price']-$detail['discount_on_product'] ." ".\App\CentralLogics\Helpers::currency_symbol()}}</h6>
                                             </div>
                                             <div class="col col-md-2 align-self-center">
                                                 <h5>{{$detail['quantity']}} </h5>
                                             </div>
-                                            
+
                                             <div class="col col-md-2 align-self-center">
                                                 <h5>{{$detail->product['capacity']}} {{$detail['unit']}}</h5>
                                             </div>
-                                            
-                                          
+
+
 
                                             <div class="col col-md-3 align-self-center text-right">
                                                 @php($amount=($detail['price']-$detail['discount_on_product'])*$detail['quantity'])
@@ -585,9 +594,9 @@
             </div>
         </div>
     </div>
-  
-   
-  
+
+
+
 </div>
     <!-- End Modal -->
 @endsection
@@ -639,15 +648,15 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-      
+
                     $.post({
                         url: "{{route('admin.order.update-deliveryDate')}}",
-                        
+
                         data: {
                             "id": id,
                             "deliveryDate": value
                         },
-                        
+
                         success: function (data) {
                             console.log(data);
                             toastr.success('Delivery Date Change successfully');
@@ -674,15 +683,15 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-      
+
                     $.post({
                         url: "{{route('admin.order.update-timeSlot')}}",
-                        
+
                         data: {
                             "id": id,
                             "timeSlot": value
                         },
-                        
+
                         success: function (data) {
                             console.log(data);
                             toastr.success('Time Slot Change successfully');

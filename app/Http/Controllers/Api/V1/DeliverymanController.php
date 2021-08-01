@@ -33,6 +33,46 @@ class DeliverymanController extends Controller
         return response()->json($dm, 200);
     }
 
+    public function set_order(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'token' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => Helpers::error_processor($validator)], 403);
+        }
+        $dm = DeliveryMan::where(['auth_token' => $request['token']])->first();
+        if (isset($dm) == false) {
+            return response()->json([
+                'errors' => [
+                    ['code' => 'delivery-man', 'message' => 'Invalid token!']
+                ]
+            ], 401);
+        }
+        //$orders = Order::with(['delivery_address','customer'])->whereIn('order_status', ['pending', 'processing', 'out_for_delivery'])
+        //    ->where(['delivery_man_id' => $dm['id']])->get();
+        $order = Order::find($request->order_id);
+        $order->order_status = 'processing';
+        $order->delivery_man_id = $dm['id'];
+        $order->save();
+
+        $fcm_token = $dm->fcm_token;
+        $value = Helpers::order_status_update_message('del_assign');
+
+        if ($value) {
+            $data = [
+                'title'       => 'Order',
+                'description' => $value,
+                'order_id'    => $order['id'],
+                'image'       => '',
+            ];
+            Helpers::send_push_notif_to_device($fcm_token, $data);
+        }
+
+        return response()->json(['message' => 'Status updated'], 200);
+    }
+
+
     public function get_current_orders(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -51,6 +91,28 @@ class DeliverymanController extends Controller
         }
         $orders = Order::with(['delivery_address','customer'])->whereIn('order_status', ['pending', 'processing', 'out_for_delivery'])
             ->where(['delivery_man_id' => $dm['id']])->get();
+        return response()->json($orders, 200);
+    }
+
+    public function get_pending_orders(Request $request)
+    {
+        //return response()->json([], 200);
+        $validator = Validator::make($request->all(), [
+            'token' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => Helpers::error_processor($validator)], 403);
+        }
+        $dm = DeliveryMan::where(['auth_token' => $request['token']])->first();
+        if (isset($dm) == false) {
+            return response()->json([
+                'errors' => [
+                    ['code' => 'delivery-man', 'message' => 'Invalid token!']
+                ]
+            ], 401);
+        }
+        //$orders = Order::with(['customer', 'delivery_man.rating', 'delivery_address'])->withCount('details')->where(['order_status' => 'pending'])->get();
+        $orders = Order::with(['delivery_address','customer'])->whereIn('order_status', ['pending'])->get();
         return response()->json($orders, 200);
     }
 
@@ -172,6 +234,33 @@ class DeliverymanController extends Controller
             ], 401);
         }
         $order = Order::with(['details'])->where(['delivery_man_id' => $dm['id'], 'id' => $request['order_id']])->first();
+        $details = $order->details;
+        foreach ($details as $det) {
+            $det['add_on_ids'] = json_decode($det['add_on_ids']);
+            $det['add_on_qtys'] = json_decode($det['add_on_qtys']);
+            $det['variation'] = json_decode($det['variation']);
+            $det['product_details'] = Helpers::product_data_formatting(json_decode($det['product_details'], true));
+        }
+        return response()->json($details, 200);
+    }
+
+    public function get_order_details_non_assigned(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'token' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => Helpers::error_processor($validator)], 403);
+        }
+        $dm = DeliveryMan::where(['auth_token' => $request['token']])->first();
+        if (isset($dm) == false) {
+            return response()->json([
+                'errors' => [
+                    ['code' => 'delivery-man', 'message' => 'Invalid token!']
+                ]
+            ], 401);
+        }
+        $order = Order::with(['details'])->where(['id' => $request['order_id']])->first();
         $details = $order->details;
         foreach ($details as $det) {
             $det['add_on_ids'] = json_decode($det['add_on_ids']);

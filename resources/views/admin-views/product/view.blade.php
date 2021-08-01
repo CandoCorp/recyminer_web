@@ -39,10 +39,18 @@
                 <div class="row align-items-md-center gx-md-5">
                     <div class="col-md-auto mb-3 mb-md-0">
                         <div class="d-flex align-items-center">
-                            <img class="avatar avatar-xxl avatar-4by3 mr-4"
+
+                                 @if(strlen($product['image'])==2)
+                                    <img class="avatar avatar-xxl avatar-4by3 mr-4"
+                                 src="{{asset('public/assets/admin/img/160x160/img2.jpg')}}"
+                                 alt="Image Description">
+                                        @else
+                                            <img class="avatar avatar-xxl avatar-4by3 mr-4"
                                  src="{{asset('storage/app/public/product')}}/{{json_decode($product['image'],true)[0]}}"
                                  onerror="this.src='{{asset('public/assets/admin/img/160x160/img2.jpg')}}'"
                                  alt="Image Description">
+                                        @endif
+
                             <div class="d-block">
                                 <h4 class="display-2 text-dark mb-0">{{count($product->rating)>0?number_format($product->rating[0]->average, 2, '.', ' '):0}}</h4>
                                 <p> {{trans('messages.of')}} {{$product->reviews->count()}} {{trans('messages.reviews')}}

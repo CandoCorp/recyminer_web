@@ -158,6 +158,34 @@ class OrderController extends Controller
         }), 200);
     }
 
+    public function get_pending_orders(Request $request)
+    {
+
+        $orders = Order::with(['customer', 'delivery_man.rating', 'delivery_address'])->withCount('details')->where(['order_status' => 'pending'])->get();
+        //$orders = Order::with(['delivery_address','customer'])->whereIn('order_status', ['pending'])->get();
+
+        return response()->json($orders->map(function ($data) {
+            $data->details_count = (integer) $data->details_count;
+            return $data;
+        }), 200);
+    }
+
+    public function get_location_pending_orders(Request $request)
+    {
+        $orders = Order::with(['customer', 'delivery_man.rating', 'delivery_address','time_slot'])
+                                ->withCount('details')
+                                ->where(['order_status' => 'pending'])
+                                ->get();
+        return response()->json($orders->map(function ($order) {
+            $location = $order->delivery_address()->get(['latitude', 'longitude','address'])[0];
+            $location['order_amount'] = $order['order_amount'];
+            $location['delivery_charge'] = $order['delivery_charge'];
+            $location['order_id'] = $order['id'];
+            return $location;
+        }), 200);
+    }
+
+
     public function get_order_details(Request $request)
     {
         $validator = Validator::make($request->all(), [

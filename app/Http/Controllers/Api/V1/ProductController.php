@@ -155,4 +155,169 @@ class ProductController extends Controller
             ], 404);
         }
     }
+
+    public function statistics() {
+
+
+        $plastic = rand(0,20);
+        $paperboard = rand(0,10);
+        $glass = rand(0,20);
+        $organic = rand(30,50);
+        $pre = $plastic + $paperboard + $glass + $organic;
+        $other = (($pre) == 100) ? 0 : 100 - $pre;
+
+        try {
+            return response()->json([[
+                'Plastic'=> $plastic,
+                'Paperboard'=> $paperboard,
+                'Glass'=> $glass,
+                'Organic'=> $organic,
+                'Others' => $other
+                ]], 200);
+        } catch (\Exception $e) {
+        return response()->json([
+            'errors' => ['code' => 'product-001', 'message' => 'Products not found!'],
+        ], 404);
+    }
+
+    }
+
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|unique:products',
+            'category_id' => 'required',
+            'images' => 'required',
+            'total_stock' => 'required|numeric|min:1',
+            'price' => 'required|numeric|min:1',
+        ], [
+            'name.required' => 'Product name is required!',
+            'category_id.required' => 'category  is required!',
+        ]);
+
+        if ($request['discount_type'] == 'percent') {
+            $dis = ($request['price'] / 100) * $request['discount'];
+        } else {
+            $dis = $request['discount'];
+        }
+
+        if ($request['price'] <= $dis) {
+            $validator->getMessageBag()->add('unit_price', 'Discount can not be more or equal to the price!');
+        }
+
+        $img_names = [];
+        if (!empty($request->file('images'))) {
+            foreach ($request->images as $img) {
+                $image_data = Helpers::upload('product/', 'png', $img);
+                array_push($img_names, $image_data);
+            }
+            $image_data = json_encode($img_names);
+        } else {
+            $image_data = json_encode([]);
+        }
+
+        $p = new Product;
+        $p->name = $request->name;
+
+        $category = [];
+        if ($request->category_id != null) {
+            array_push($category, [
+                'id' => $request->category_id,
+                'position' => 1,
+            ]);
+        }
+        if ($request->sub_category_id != null) {
+            array_push($category, [
+                'id' => $request->sub_category_id,
+                'position' => 2,
+            ]);
+        }
+        if ($request->sub_sub_category_id != null) {
+            array_push($category, [
+                'id' => $request->sub_sub_category_id,
+                'position' => 3,
+            ]);
+        }
+
+        $p->category_ids = json_encode($category);
+        $p->description = $request->description;
+
+        $choice_options = [];
+        if ($request->has('choice')) {
+            foreach ($request->choice_no as $key => $no) {
+                $str = 'choice_options_' . $no;
+                if ($request[$str][0] == null) {
+                    $validator->getMessageBag()->add('name', 'Attribute choice option values can not be null!');
+                    return response()->json(['errors' => Helpers::error_processor($validator)]);
+                }
+                $item['name'] = 'choice_' . $no;
+                $item['title'] = $request->choice[$key];
+                $item['options'] = explode(',', implode('|', preg_replace('/\s+/', ' ', $request[$str])));
+                array_push($choice_options, $item);
+            }
+        }
+
+        $p->choice_options = json_encode($choice_options);
+        $variations = [];
+        $options = [];
+        if ($request->has('choice_no')) {
+            foreach ($request->choice_no as $key => $no) {
+                $name = 'choice_options_' . $no;
+                $my_str = implode('|', $request[$name]);
+                array_push($options, explode(',', $my_str));
+            }
+        }
+        //Generates the combinations of customer choice options
+        $combinations = Helpers::combinations($options);
+
+        $stock_count = 0;
+        if (count($combinations[0]) > 0) {
+            foreach ($combinations as $key => $combination) {
+                $str = '';
+                foreach ($combination as $k => $item) {
+                    if ($k > 0) {
+                        $str .= '-' . str_replace(' ', '', $item);
+                    } else {
+                        $str .= str_replace(' ', '', $item);
+                    }
+                }
+                $item = [];
+                $item['type'] = $str;
+                $item['price'] = abs($request['price_' . str_replace('.', '_', $str)]);
+                $item['stock'] = abs($request['stock_' . str_replace('.', '_', $str)]);
+                array_push($variations, $item);
+                $stock_count += $item['stock'];
+            }
+        } else {
+            $stock_count = (integer)$request['total_stock'];
+        }
+
+        if ((integer)$request['total_stock'] != $stock_count) {
+            $validator->getMessageBag()->add('total_stock', 'Stock calculation mismatch!');
+        }
+
+        if ($validator->getMessageBag()->count() > 0) {
+            return response()->json(['errors' => Helpers::error_processor($validator)]);
+        }
+
+        //combinations end
+        $p->variations = json_encode($variations);
+        $p->price = $request->price;
+        $p->capacity = $request->capacity;
+
+        $p->unit = $request->unit;
+        $p->image = $image_data;
+
+        $p->tax = $request->tax_type == 'amount' ? $request->tax : $request->tax;
+        $p->tax_type = $request->tax_type;
+
+        $p->discount = $request->discount_type == 'amount' ? $request->discount : $request->discount;
+        $p->discount_type = $request->discount_type;
+        $p->total_stock = $request->total_stock;
+
+        $p->attributes = $request->has('attribute_id') ? json_encode($request->attribute_id) : json_encode([]);
+        $p->save();
+
+        return response()->json([$p], 200);
+    }
 }

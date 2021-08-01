@@ -24,12 +24,15 @@ Route::group(['namespace' => 'Api\V1'], function () {
     Route::group(['prefix' => 'delivery-man'], function () {
         Route::get('profile', 'DeliverymanController@get_profile');
         Route::get('current-orders', 'DeliverymanController@get_current_orders');
+        Route::get('pending-orders', 'DeliverymanController@get_pending_orders');
         Route::get('all-orders', 'DeliverymanController@get_all_orders');
         Route::post('record-location-data', 'DeliverymanController@record_location_data');
         Route::get('order-delivery-history', 'DeliverymanController@get_order_history');
         Route::put('update-order-status', 'DeliverymanController@update_order_status');
+        Route::put('set-order', 'DeliverymanController@set_order');
         Route::put('update-payment-status', 'DeliverymanController@order_payment_status_update');
         Route::get('order-details', 'DeliverymanController@get_order_details');
+        Route::get('order-details-non-assigned', 'DeliverymanController@get_order_details_non_assigned');
         Route::get('last-location', 'DeliverymanController@get_last_location');
         Route::put('update-fcm-token', 'DeliverymanController@update_fcm_token');
 
@@ -48,6 +51,7 @@ Route::group(['namespace' => 'Api\V1'], function () {
         Route::get('latest', 'ProductController@get_latest_products');
         Route::get('discounted', 'ProductController@get_discounted_products');
         Route::get('search', 'ProductController@get_searched_products');
+        Route::post('create', 'ProductController@store');
         Route::get('details/{id}', 'ProductController@get_product');
         Route::get('related-products/{product_id}', 'ProductController@get_related_products');
         Route::get('reviews/{product_id}', 'ProductController@get_product_reviews');
@@ -64,6 +68,16 @@ Route::group(['namespace' => 'Api\V1'], function () {
         Route::get('/', 'NotificationController@get_notifications');
     });
 
+    Route::group(['prefix' => 'pending-orders'], function () {
+        Route::get('/', 'OrderController@get_pending_orders');
+        Route::get('/location', 'OrderController@get_location_pending_orders');
+    });
+
+    Route::group(['prefix' => 'statistics'], function () {
+        Route::get('/', 'ProductController@statistics');
+    });
+
+
     Route::group(['prefix' => 'categories'], function () {
         Route::get('/', 'CategoryController@get_categories');
         Route::get('childes/{category_id}', 'CategoryController@get_childes');
@@ -78,6 +92,7 @@ Route::group(['namespace' => 'Api\V1'], function () {
 
         Route::group(['prefix' => 'address'], function () {
             Route::get('list', 'CustomerController@address_list');
+            Route::get('/list/{id}', 'CustomerController@address_by_id');
             Route::post('add', 'CustomerController@add_new_address');
             Route::put('update/{id}', 'CustomerController@update_address');
             Route::delete('delete', 'CustomerController@delete_address');

@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "green-mining-321420",
+  "private_key_id": "1f8fc321323815cad01dbf1bc0f042931d013b1a",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCcjoJ991PmPQ0h\nsIMlv+DXaVbUp38Z+lJk+FIbiu1HcuSgYrPusXw+6rxohdR5g76gazSE750Y1eeS\nad7DnhXT0eg7oiYJ61gHngcJe50vVJKNtk2j1CWke+kvfb2NVWaxyZzxsHxuTltB\n1ZX5rOaTXk7N9g0fYUS4LYAAbxgw51tCR78peLuQcmRN11x3ppubTAh5j1tvXny/\nA4HGcxAPR0tTjiBYQC1QSxomgNTi7qt0UsnfWiWwOd6XtX8X5jbS9mrOOBNat2fA\nIn35GjYca8suwHofI5CSmk0bxCphS+97gk5OuaF9cxamLBflhXSVYS7NM+Ku7+B1\nRQ/rib0xAgMBAAECggEAI2NbP9oOTvbx5vGdU4Uh789R31PVOSwKP+SZurwWkpX3\n9AEbpxLbgOVSnVXTB3yuNFjHUF1RZ3HCnKftwM4VJQJHumMWshtOlLo14QDeMPqu\n/fV9a1DjCWEw/pkvpajuQ7XNEhzQo6Z2nlUHR567qAgjTA8YPEWiYPd3/aEfGL54\ni0ME2tSmAhYjDHYs7cQIYx/P5voAE7FDhfn5FMXpV1LguToFNPLbYx3pxHMTkskY\nRMJP4l2IlnoArp6b6GtRrypaxKpOP0D83YQZuHyFim7yqI01Z1Tq0X1llbZGPyF8\nwfpb6fJLQrFX82gfG6AKp56ff8MiZBouRhmvcOx+mQKBgQDUPtpueK/ksRO2PoWY\nmiqberEAmjZihwglcuiNNbH/RJV0zPlzWrfj5xSrfNLw+tKjQI8gN/yL/GBJ+NPz\nHFy30ExKB1T5dbFlcC/DQBTC0b2V1XuaOHQtd4/sys+evTaw6wkE1gbPZVIJCNbo\n+HSFRnLN5F3ZUjGNPU75xJPmQwKBgQC81LT1wsPqxHpp297A7a1jBgYnp+CcC4hd\nmcZLgqLAuZ4IgBrWadBO1nC5EX0WpVviXATV2MO/uG+7Y2mJ7Pcf7BhQAWHBN2XQ\nBBpICUUUDqNWS3ssEPLiSVCw7hN6pZLg+t7dxXT39QD390L11YtQS3zJ77zNwZXP\n4OaKpltJewKBgBe6mzMknQ2lWn3SiZ8hBUhytB1MIG5tiFSffy5iZW8TnN39GJpz\n9wEs0ZvGjdLRSAFmc1n3yG1iHuXGQvP4JMmMKStRnIdzSAz+OOjMXkXVqyt4PaRl\nUV/P8TBZEFM/9kBbVpvKzeIcAsrtyREszeIkmSs5r+BfFxkiVJUKDDr/AoGASXhN\nTE3SYpa9tlBo9BHF44Blhqpn1u8ZyKlbIOgcIPZXiaEmUARtmy8OPsOSMux1urXo\n37duOjstpfBBEPwVDuOSdhaDjWTbhTsDasHIkcw8Owg1TWjux6KU9bI7+/1OD6Es\nc4cvQoaeMNyQvguvH7evPva7NCc8/dvYd1vQqt8CgYEA0KC4uujAC0hvw1s2TTBu\nru/PQQ4TmrpiU5nttALBRIKG1RQ0BiwDulK5UK4MOUifgH5BweyVY0p+ytWDFboM\nI+IC3MPAu5jQzHLDHGqBIkbQo5H9u0QLJi3oN4T99PHEgd3XCpKzP3V5cYoQdOYG\nI6SImdBIIQGNgNZsPsjG4xM=\n-----END PRIVATE KEY-----\n",
+  "client_email": "kevins@green-mining-321420.iam.gserviceaccount.com",
+  "client_id": "106957551497751578754",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/kevins%40green-mining-321420.iam.gserviceaccount.com"
+}
