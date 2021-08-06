@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
     curl
 
 # Install extensions
-RUN docker-php-ext-install mysqli pdo pdo_mysql mbstring exif pcntl bcmath gd && docker-php-ext-enable pdo_mysql
+RUN docker-php-ext-install mysqli pdo pdo_mysql mbstring exif pcntl bcmath gd zip && docker-php-ext-enable pdo_mysql zip
 RUN docker-php-source delete
 
 # Clear cache
