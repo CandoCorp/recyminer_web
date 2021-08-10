@@ -42,13 +42,13 @@ ENTRYPOINT ["/var/www/tmp/docker-entrypoint.sh"]
 # Add user for laravel application
 #
 ## Copy existing application directory contents
-#COPY . /var/www
+COPY . /var/www
 #
 ## Copy existing application directory permissions
-#COPY --chown=www:www . /var/www
+COPY --chown=www:www . /var/www
 #
 ## Change current user to www
-#USER www
+USER www
 
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
